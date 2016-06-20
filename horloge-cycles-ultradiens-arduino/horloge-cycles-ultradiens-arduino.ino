@@ -89,8 +89,10 @@ Adafruit_SSD1306 display( OLED_RESET );
 const int adrCarillon = 0;
 bool timerOK = false;
 const int bBtn1  = PORTD2;
+const int bBtn2  = PORTD3;
+#define btn2Get ! bitRead( PIND, bBtn2 )
 
-#define avecSerial false
+#define avecSerial true
 
 // Modifier ici l’heure d’attention maximum.
 // Par exemple, si 7 h 15 est une heure d’attention maximum :
@@ -143,7 +145,7 @@ void serialEvent()
   // Cette procédure permet de régler l’heure de l’horloge
   // via le bus RS232.
   // Exemple de commande à envoyer :
-  // 2016,6,14,10,06,10
+  // 2016,6,17,00,05,00
 
   const byte nbCharMax = 19;
   char str[ nbCharMax ] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
@@ -255,16 +257,25 @@ void prepareIconeCarillon()
     { prepareIconeCarillonOFF(); }
 }
 
+const int16_t Interrupt0 = digitalPinToInterrupt( 2 );
+const int16_t Interrupt1 = digitalPinToInterrupt( 3 );
+
 void setup()
 {
   #if avecSerial
   // Initalisation de la communication série pour régler l’heure
   Serial.begin( 115200 );
+  Serial.print( "\n\nInterrupt0 = " );
+  Serial.print( Interrupt0 );
+  Serial.print( "\nInterrupt1 = " );
+  Serial.print( Interrupt1 );
   #endif
 
   // Initialisation du bouton en INPUT_PULLUP
   bitClear( DDRD, bBtn1 );
   bitSet( PORTD, bBtn1 );
+  bitClear( DDRD, bBtn2 );
+  bitSet( PORTD, bBtn2 );
 
   // Initialisation de l’interruption du bouton
   attachInterrupt( 0, boutonPress, FALLING );
@@ -453,6 +464,22 @@ void loop()
   {
     horloge();
     timerOK = false;
+  }
+  if( btn2Get )
+  {
+    unsigned long dT = millis();
+    display.clearDisplay();
+    display.setTextSize( 2 );
+    display.setCursor( 27, 20 );
+    display.print( "coucou" );
+    display.display();
+    dT = millis() - dT;
+    display.setCursor( 5, 35 );
+    display.print( "dT = " );
+    display.print( dT );
+    display.print( " ms" );
+    display.display();
+    while( btn2Get ){}
   }
 }
 
