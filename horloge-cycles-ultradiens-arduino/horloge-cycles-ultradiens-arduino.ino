@@ -25,16 +25,16 @@ Pour mettre à jour l’heure de l’horloge, il faut changer la valeur de
 Cette valeur est à “false” par défaut pour limiter l’utilisation de la RAM.
 
 # CONNEXIONS Arduino Nano
-    I²C       GND   ⇒   GND
-    I²C       VCC   ⇒   +5V
-    I²C       SDA   ⇒   pin A4 (PORT C4) + pullup 4.7 kΩ
-    I²C       SCL   ⇒   pin A5 (PORT C5) + pullup 4.7 kΩ
-    Buzzer    +     ⇒   pin A0 (PORT C0)
-    Buzzer    -     ⇒   GND
-    Bouton 1  +     ⇒   pin D2 (PORT D2)
-    Bouton 1  -     ⇒   GND
-    Bouton 2  +     ⇒   pin D3 (PORT D3)
-    Bouton 2  -     ⇒   GND
+    GND          ⇒   GND
+    VCC          ⇒   +5V
+    I²C SDA      ⇒   pin A4 (PORT C4) + pullup 4.7 kΩ
+    I²C SCL      ⇒   pin A5 (PORT C5) + pullup 4.7 kΩ
+    Buzzer +     ⇒   pin A0 (PORT C0)
+    Buzzer -     ⇒   GND
+    Bouton 1 +   ⇒   pin D2 (PORT D2)
+    Bouton 1 -   ⇒   GND
+    Bouton 2 +   ⇒   pin D3 (PORT D3)
+    Bouton 2 -   ⇒   GND
 
 # HORLOGE DS1307 I²C
     ## RÉFÉRENCE AliExpress
@@ -48,10 +48,10 @@ Cette valeur est à “false” par défaut pour limiter l’utilisation de la R
     https://github.com/adafruit/RTClib.git
 
     ## CONNEXIONS
-    GND    GND
-    VCC    +5V
-    SDA    pin A4 (PORT C4) + pullup 4.7 kΩ
-    SCL    pin A5 (PORT C5) + pullup 4.7 kΩ
+    GND       ⇒   GND
+    VCC       ⇒   +5V
+    I²C SDA   ⇒   pin A4 (PORT C4) + pullup 4.7 kΩ
+    I²C SCL   ⇒   pin A5 (PORT C5) + pullup 4.7 kΩ
 
 # ÉCRAN OLED 128×64 I²C (compatible SSD1306)
     ## RÉFÉRENCE AliExpress
@@ -64,10 +64,10 @@ Cette valeur est à “false” par défaut pour limiter l’utilisation de la R
     https://github.com/adafruit/Adafruit_SSD1306.git
 
     ## CONNEXIONS
-    GND    GND
-    VDD    +5V
-    SDA    pin A4 (PORT C4) + pullup 4.7 kΩ
-    SCK    pin A5 (PORT C5) + pullup 4.7 kΩ
+    GND       ⇒   GND
+    VCC       ⇒   +5V
+    I²C SDA   ⇒   pin A4 (PORT C4) + pullup 4.7 kΩ
+    I²C SCK   ⇒   pin A5 (PORT C5) + pullup 4.7 kΩ
 
 # MICROCONTRÔLEUR
     Clone Arduino Nano
