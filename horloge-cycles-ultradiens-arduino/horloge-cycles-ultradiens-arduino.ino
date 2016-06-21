@@ -1,10 +1,10 @@
 /*
 
-HORLOGE À CYCLES ULTRADIENS
+# HORLOGE À CYCLES ULTRADIENS
 
 http://ouilogique.com/horloge_cycles_ultradiens/
 
-DESCRIPTION DU PROGRAMME
+## DESCRIPTION DU PROGRAMME
 Ce programme affiche le pourcentage d’attention d’une personne en fonction
 de l’heure. Il se base sur les hypothèses suivantes :
 
@@ -23,44 +23,52 @@ Pour mettre à jour l’heure de l’horloge, il faut changer la valeur de
 “avecSerial” à “true” et recharger le programme sur le microcontrôleur.
 Cette valeur est à “false” par défaut pour limiter l’utilisation de la RAM.
 
+## CONNEXIONS Arduino Nano
+    I²C       GND   ⇒   GND
+    I²C       VCC   ⇒   +5V
+    I²C       SDA   ⇒   pin A4 + pullup 4.7 kΩ
+    I²C       SCL   ⇒   pin A5 + pullup 4.7 kΩ
+    Buzzer    +     ⇒   pin A0 (PORT C0)
+    Buzzer    -     ⇒   GND
+    Bouton 1  +     ⇒   pin D2 (PORT D2)
+    Bouton 1  -     ⇒   GND
+    Bouton 2  +     ⇒   pin D3 (PORT D3)
+    Bouton 2  -     ⇒   GND
 
-HORLOGE DS1307 I²C
-    RÉFÉRENCE AliExpress
+## HORLOGE DS1307 I²C
+    ### RÉFÉRENCE AliExpress
     http://www.aliexpress.com/item/5pcs-lot-Tiny-RTC-I2C-AT24C32-DS1307-Real-Time-Clock-Module-Board-For-Arduino-With-A/32327865928.html
 
-    ADRESSES I²C
+    ### ADRESSES I²C
     0x50 (EEPROM AT24C32)
     0x68 (DS1307)
 
-    LIBRAIRIE Adafruit
+    ### LIBRAIRIE Adafruit
     https://github.com/adafruit/RTClib.git
 
-    CONNEXIONS
+    ### CONNEXIONS
     GND    GND
     VCC    +5V
-    SDA    pin A4
-    SCL    pin A5
+    SDA    pin A4 + pullup 4.7 kΩ
+    SCL    pin A5 + pullup 4.7 kΩ
 
-ÉCRAN OLED 128×64 I²C
-    RÉFÉRENCE AliExpress
+## ÉCRAN OLED 128×64 I²C (compatible SSD1306)
+    ### RÉFÉRENCE AliExpress
     http://www.aliexpress.com/item/1Pcs-Yellow-blue-double-color-128X64-OLED-LCD-LED-Display-Module-For-Arduino-0-96/32305641669.html
 
-    ADRESSE I²C
+    ### ADRESSE I²C
     0x3C
 
-    LIBRAIRIE Adafruit
+    ### LIBRAIRIE Adafruit
     https://github.com/adafruit/Adafruit_SSD1306.git
 
-    CONNEXIONS
+    ### CONNEXIONS
     GND    GND
     VDD    +5V
-    SCK    pin A5
-    SDA    pin A4
+    SDA    pin A4 + pullup 4.7 kΩ
+    SCK    pin A5 + pullup 4.7 kΩ
 
-PULLUPS I²C
-    4.7 kΩ
-
-MICROCONTRÔLEUR
+## MICROCONTRÔLEUR
     Clone Arduino Nano
 
 juin 2016, ouilogique.com
@@ -76,7 +84,7 @@ juin 2016, ouilogique.com
 #include "RTClib.h"
 RTC_DS1307 RTC = RTC_DS1307();
 #include <Adafruit_SSD1306.h>
-#define OLED_RESET 4
+#define OLED_RESET 4 // OLED_RESET=4 pour Arduino Nano // OLED_RESET=16 pour ESP8266
 Adafruit_SSD1306 display( OLED_RESET );
 #if( SSD1306_LCDHEIGHT != 64 )
 #error( "Height incorrect, please fix Adafruit_SSD1306.h!" );
