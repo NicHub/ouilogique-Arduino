@@ -5,7 +5,7 @@ LECTURE D’UN ENCODEUR ROTATIF KY-040
 
 # DESCRIPTION DU PROGRAMME
 Lecture d’un encodeur rotatif KY-040 pour affichage dans le traceur
-série de l’IDE Arduino (⌘⇧L).
+série de l’IDE Arduino (CMD-SHIFT-L).
 La rotation du bouton est détecté avec des interruptions sur les
 broches 2 et 3 du port D. Comme l’Arduino Nano n’a que ces deux broches
 avec interruption, le bouton de l’encodeur (quand on presse dessus) est
@@ -65,7 +65,7 @@ void loop()
     if( encodeurVal != 0 )
     {
       counter += encodeurVal;
-      // À visionner dans le traceur série de l’IDE Arduino (⌘⇧L)
+      // À visionner dans le traceur série de l’IDE Arduino (CMD-SHIFT-L)
       Serial.println( counter, DEC );
     }
     encodeurTourne = false;
