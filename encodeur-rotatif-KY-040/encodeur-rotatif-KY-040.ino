@@ -76,7 +76,7 @@ void loop()
   {
     compteur = 0;
     Serial.println( compteur );
-    while( BtnRead ){ _delay_ms( 1 ); };
+    while( BtnRead ){ _delay_ms( 1 ); }
     _delay_ms( 20 );
   }
 }
