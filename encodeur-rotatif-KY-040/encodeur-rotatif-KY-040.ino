@@ -56,7 +56,7 @@ void setup()
 
 void loop()
 {
-  static uint8_t counter = 0;
+  static uint8_t compteur = 0;
 
   // Si l’encodeur est tourné.
   if( encodeurTourne )
@@ -64,16 +64,21 @@ void loop()
     int8_t encodeurVal = lectureEncodeur();
     if( encodeurVal != 0 )
     {
-      counter += encodeurVal;
+      compteur += encodeurVal;
       // À visionner dans le traceur série de l’IDE Arduino (CMD-SHIFT-L)
-      Serial.println( counter, DEC );
+      Serial.println( compteur );
     }
     encodeurTourne = false;
   }
 
   // Si le bouton est pressé, on remet le compteur à 0.
   if( BtnRead )
-    { counter = 0; }
+  {
+    compteur = 0;
+    Serial.println( compteur );
+    while( BtnRead ){ _delay_ms( 1 ); };
+    _delay_ms( 20 );
+  }
 }
 
 
