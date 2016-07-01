@@ -39,6 +39,15 @@ juin 2016, ouilogique.com
 bool encodeurTourne = false;
 byte ENC_PORT_VAL = 0;
 
+// Modifier ici la sensibilité de l’encodeur pour qu’il ne réagisse
+// pas trop vite. Cette valeur représente le nombre de millisecondes
+// avant un changement sur la sortie.
+static const long sensibiliteEncodeur = 90;
+
+// Gamme de sortie de l’encodeur. À modifier en fonction de l’application.
+static const int8_t minVal = 0;
+static const int8_t maxVal = 10;
+
 
 void setup()
 {
@@ -56,16 +65,23 @@ void setup()
 
 void loop()
 {
-  static uint8_t compteur = 0;
+  static int8_t compteur = 0;
 
-  // Si l’encodeur est tourné.
+  // Lecture et affichage des valeurs de l’encodeur.
   if( encodeurTourne )
   {
     int8_t encodeurVal = lectureEncodeur();
     if( encodeurVal != 0 )
     {
-      compteur += encodeurVal;
-      // À visionner dans le traceur série de l’IDE Arduino (CMD-SHIFT-L)
+      // Mise à jour du compteur et coercion dans la gamme minVal..maxVal
+      if( compteur < minVal || ( compteur == minVal && encodeurVal < 0 ) )
+        { compteur = minVal; }
+      else if( compteur > maxVal || ( compteur == maxVal && encodeurVal > 0 ) )
+        { compteur = maxVal; }
+      else
+        { compteur = compteur + encodeurVal; }
+
+      // Pour visionnement dans le traceur série de l’IDE Arduino (CMD-SHIFT-L)
       Serial.println( compteur );
     }
     encodeurTourne = false;
@@ -75,7 +91,7 @@ void loop()
   if( BtnRead )
   {
     compteur = 0;
-    Serial.println( compteur );
+    Serial.println( 0 );
     while( BtnRead ){ _delay_ms( 1 ); }
     _delay_ms( 20 );
   }
@@ -121,14 +137,22 @@ int8_t lectureEncodeur()
     else
       { resultat = 0; }
   }
+
+  // On rejete quelques lectures pour limiter la sensibilité de l’encodeur
+  // et éviter ainsi qu’il ne tourne trop vite.
+  static long lastT = millis();
+  if( millis() - lastT < sensibiliteEncodeur )
+    { resultat = 0; }
+  else
+    { lastT = millis(); }
+
+  // On retourne le résultat.
   return( resultat );
 }
 
 
 void interruptionEncodeur()
 {
-  cli();
   ENC_PORT_VAL = ENC_PORT;
-  sei();
   encodeurTourne = true;
 }
