@@ -7,6 +7,13 @@ DÉMO DU LECTEUR MP3 DFPlayer
 http://ouilogique.com/tests_DFPlayer/
 
 
+## Bibliothèque utilisée
+`DFPlayer-Mini-mp3` de *DFRobot* :
+https://github.com/DFRobot/DFPlayer-Mini-mp3.git
+!! Attention, le dépôt Git contient un sous-répertoire `DFPlayer_Mini_Mp3`
+et c’est lui seul qui doit se trouver dans `~/Documents/Arduino/libraries/`
+
+
 ## RÉFÉRENCES
 http://www.banggood.com/3Pcs-DFPlayer-Mini-MP3-Player-Module-For-Arduino-p-981366.html
 http://www.dfrobot.com/wiki/index.php/DFPlayer_Mini_SKU:DFR0299
@@ -22,13 +29,13 @@ peut être utilisée à cet effet. J’ai testé avec les couples de broches
 10 & 11 ainsi que A0 & A1 et ça fonctionne.
 
 !!! IL FAUT FAIRE ATTENTION DE CONNECTER LE RX DU DFPlayer AU TX DE
-L’ARDUINO ET INVERSÉMENT POUR LES DEUX AUTRES SIGNAUX !!!
+L’ARDUINO ET INVERSEMENT POUR LES DEUX AUTRES SIGNAUX !!!
 
 Pour le déverminage, il peut être utile de passer au morceau suivant
 ou précédent en mettant les broches 11 (IO2) et 9 (IO1) à la masse
 pour forcer la lecture.
 
-Si on a pas d’haut-parleur, un buzzer peut faire l’affaire lors de la
+Si on n’a pas de haut-parleur, un buzzer peut faire l’affaire lors de la
 mise en route.
 
 
@@ -36,7 +43,7 @@ mise en route.
 - Jusqu’à 32 Go (testé avec 32 Go ⇒ OK)
 - Formaté en FAT16 ou en FAT32 (testé FAT32 formaté avec OSX ⇒ OK)
 - Doit contenir un répertoire appelé “mp3”
-- Le répertoire appelé “mp3” peut optionnelement contenir des répertoires appelés “001”, “002”, ...
+- Le répertoire appelé “mp3” peut optionnellement contenir des répertoires appelés “001”, “002”, ...
 - Les noms des fichiers doivent commencer par 4 digits et finir par l’extension “.mp3”
 
 /Volumes/DFPLAYER/mp3
@@ -54,7 +61,7 @@ mise en route.
   GND   (pin 7)     ⇒     GND Arduino Nano
   SPK1  (pin 8)     ⇒     Haut-parleur + (ou buzzer +)
 
-¹ Ajouter une résistance d’1 kΩ en série pour éviter les ronflements
+¹ Ajouter une résistance de 1 kΩ en série pour éviter les ronflements
 ² fonctionne aussi sur A0
 ³ fonctionne aussi sur A1
 
