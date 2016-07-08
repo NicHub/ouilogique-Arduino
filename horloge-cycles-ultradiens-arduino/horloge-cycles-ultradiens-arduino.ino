@@ -25,16 +25,26 @@ Pour mettre à jour l’heure de l’horloge, il faut changer la valeur de
 Cette valeur est à “false” par défaut pour limiter l’utilisation de la RAM.
 
 # CONNEXIONS Arduino Nano
-    GND          ⇒   GND
-    VCC          ⇒   +5V
-    I²C SDA      ⇒   pin A4 (PORT C4) + pullup 4.7 kΩ
-    I²C SCL      ⇒   pin A5 (PORT C5) + pullup 4.7 kΩ
-    Buzzer +     ⇒   pin A0 (PORT C0)
-    Buzzer -     ⇒   GND
-    Bouton 1 +   ⇒   pin D2 (PORT D2)
-    Bouton 1 -   ⇒   GND
-    Bouton 2 +   ⇒   pin D3 (PORT D3)
-    Bouton 2 -   ⇒   GND
+    GND                     ⇒   GND
+    VCC                     ⇒   +5V
+    I²C SDA                 ⇒   pin A4 (PORT C4) + pullup 4.7 kΩ
+    I²C SCL                 ⇒   pin A5 (PORT C5) + pullup 4.7 kΩ
+    Buzzer +                ⇒   pin A0 (PORT C0)
+    Buzzer -                ⇒   GND
+    Encodeur SW  (bouton)   ⇒   pin D4 (PORT D4)
+    Encodeur DT  (encodeur) ⇒   pin D3 (PORT D3)
+    Encodeur CLK (encodeur) ⇒   pin D2 (PORT D2)
+
+# ENCODEUR KY-040
+    ## RÉFÉRENCE Banggood
+    http://www.banggood.com/5Pcs-5V-KY-040-Rotary-Encoder-Module-For-Arduino-AVR-PIC-p-951151.html
+
+    ## CONNEXIONS
+    GND            ⇒   GND
+    +              ⇒   +5V
+    SW  (bouton)   ⇒   pin D4 (PORT D4)
+    DT  (encodeur) ⇒   pin D3 (PORT D3)
+    CLK (encodeur) ⇒   pin D2 (PORT D2)
 
 # HORLOGE DS1307 I²C
     ## RÉFÉRENCE AliExpress
@@ -91,13 +101,15 @@ Adafruit_SSD1306 display( OLED_RESET );
 #error( "Height incorrect, please fix Adafruit_SSD1306.h!" );
 #endif
 #include "aTunes.h"
-#define carillonPin A0
-#define carillonBit PORTC0
+#define carillonPin 5
 #define dXCarillon 5
 #define dYCarillon 25
 const int adrCarillon = 0;
 bool timerOK = false;
-const int bBtn1  = PORTD2;
+const int bBtn1  = PORTD4;
+#define BtnRead ! bitRead( PIND, bBtn1 )
+
+
 
 #define avecSerial false
 
@@ -276,7 +288,7 @@ void setup()
   bitSet( PORTD, bBtn1 );
 
   // Initialisation de l’interruption du bouton
-  attachInterrupt( 0, boutonPress, FALLING );
+  // attachInterrupt( 0, boutonPress, FALLING );
 
   // Initialisation du Timer 1 à 1 s
   cli();                   // disable global interrupts
@@ -443,17 +455,8 @@ void horloge()
 void carillon()
 {
   if( EEPROM.read( adrCarillon ) )
-  {
-    // Carillonne
-    MarioBros( carillonPin );
-
-    // On met le carillon en INPUT_PULLUP pour éviter les ronflements
-    // parasites causés par l’écran.
-    // Il n’y a pas besoin de le mettre en OUTPUT avant l’utilisation,
-    // car la procédure “tone” s’en charge.
-    bitClear( DDRC, carillonBit );
-    bitSet( PORTC, carillonBit );
-  }
+    { MarioBros( carillonPin ); }
+  noTone( carillonPin );
 }
 
 void loop()
@@ -463,6 +466,8 @@ void loop()
     horloge();
     timerOK = false;
   }
+  if( BtnRead )
+    { boutonPress(); }
 }
 
 ISR( TIMER1_COMPA_vect )
