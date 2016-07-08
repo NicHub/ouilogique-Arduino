@@ -53,7 +53,8 @@ mise en route.
 ├── 0004×××.mp3
 
 
-## CONNEXIONS DFPlayer
+## CONNEXIONS DFPlayer AVEC HAUT-PARLEUR PASSIF (non-amplifié)
+
   VCC   (pin 1)     ⇒     5V Arduino Nano
   RX    (pin 2)  ¹  ⇒     software TX Arduino Nano (pin 10) ²
   TX    (pin 3)     ⇒     software RX Arduino Nano (pin 11) ³
@@ -61,9 +62,18 @@ mise en route.
   GND   (pin 7)     ⇒     GND Arduino Nano
   SPK1  (pin 8)     ⇒     Haut-parleur + (ou buzzer +)
 
-¹ Ajouter une résistance de 1 kΩ en série pour éviter les ronflements
+¹ Ajouter une résistance de 1 kΩ en série pour éviter les ronflements
 ² fonctionne aussi sur A0
 ³ fonctionne aussi sur A1
+
+
+## CONNEXIONS DFPlayer AVEC HAUT-PARLEUR ACTIF (amplifié)
+
+  idem que si dessus sauf pour le HP
+  DAC_R  (pin 4)    ⇒     Haut-parleur droite +
+  DAC_L  (pin 5)    ⇒     Haut-parleur gauche +
+  SPK2   (pin 6)    ⇒     Haut-parleur droite - & gauche -
+
 
 
 juillet 2016, ouilogique.com
