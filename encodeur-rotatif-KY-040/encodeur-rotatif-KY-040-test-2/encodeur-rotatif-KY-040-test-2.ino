@@ -44,7 +44,7 @@ byte ENC_PORT_VAL = 0;
 // Modifier ici la sensibilité de l’encodeur pour qu’il ne réagisse
 // pas trop vite. Cette valeur représente le nombre de millisecondes
 // avant un changement sur la sortie.
-static const long sensibiliteEncodeur = 90;
+static const long sensibiliteEncodeur = 10;
 
 // Gamme de sortie de l’encodeur. À modifier en fonction de l’application.
 static const int8_t minVal = 0;
@@ -114,8 +114,8 @@ void loop()
 */
 int8_t lectureEncodeur()
 {
-  // Si le bouton est pressé, on retourne 2.
-  if( BtnRead )
+  // Si le bouton est pressé, on quitte en retournant 2.
+  if( ! bitRead( ENC_PORT_VAL, ENC_C ) )
   {
     return( 2 );
   }
