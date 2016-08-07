@@ -164,7 +164,7 @@ void serialEvent()
   // Cette procédure permet de régler l’heure de l’horloge
   // via le bus RS232.
   // Exemple de commande à envoyer :
-  // 2016,6,14,10,06,10
+  // 2016,7,26,14,03,20
 
   const byte nbCharMax = 19;
   char str[ nbCharMax ] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
@@ -457,6 +457,7 @@ void carillon()
   if( EEPROM.read( adrCarillon ) )
     { MarioBros( carillonPin ); }
   noTone( carillonPin );
+  pinMode( carillonPin, INPUT_PULLUP );
 }
 
 void loop()
