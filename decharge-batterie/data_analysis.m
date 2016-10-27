@@ -9,10 +9,11 @@ R = 10;
 % format long e
 format short
 cd '~/Documents/programmation/ouilogique-Arduino/decharge-batterie/'
-filename = 'data_sosbatterie_1.csv';
-filename = 'data_sosbatterie_2.csv';
-
-
+filename = 'data_sosbatterie_1.csv';      % 3.8 h, 1593 mAh
+filename = 'data_sosbatterie_2.csv';      % 3.8 h, 1672 mAh
+filename = 'data_high_creek_1.csv';       % 3.7 h, 1786 mAh
+filename = 'data_samsung_1.csv';          % 3.1 h, 1472 mAh
+filename = 'data_powerbank_didel_1.csv';  % 1.9 h,  893 mAh
 
 
 M = csvread( filename );
