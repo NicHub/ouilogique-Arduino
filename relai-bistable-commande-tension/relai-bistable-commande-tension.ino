@@ -3,6 +3,9 @@
 COMMUTATION TEMPORISÉE D’UN RELAI BISTABLE
 ==========================================
 
+Pour la description du projet, voir
+http://ouilogique.com/relai-bistable-commande-tension/
+
 Pour la gestion des interruptions, voir
 https://sites.google.com/site/qeewiki/books/avr-guide/external-interrupts-on-the-atmega328
 
