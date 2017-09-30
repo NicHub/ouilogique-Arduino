@@ -22,8 +22,8 @@ const long dTbeforeOPEN     = 60000;
 const long dTtoggle         = 50;
 
 const int buttonPin         = PD2; // PORT D2 ⇒ pin 2
-const int COIL1Pin          = PB0; // PORT B0 ⇒ pin 8
-const int COIL2Pin          = PB1; // PORT B1 ⇒ pin 9
+const int COIL1Pin          = PB1; // PORT B1 ⇒ pin 9
+const int COIL2Pin          = PB0; // PORT B0 ⇒ pin 8
 const int LEDboardPin       = PB5; // PORT B5 ⇒ pin 13
 
 // #define COIL1HIGH       PORTB |=  ( 1<<COIL1Pin )
