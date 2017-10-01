@@ -32,31 +32,11 @@ const int buttonPin = 9;
 
 void setup()
 {
-  Serial.begin( 115200 );
-  Serial.println( "\n\nSTART\n\n" );
   pinMode( ledPin, OUTPUT );
   pinMode( buttonPin, INPUT_PULLUP );
 }
 
 void loop()
 {
-  bool bR = buttonRead;
-  static bool prevbR = false;
-  static long T1;
-  static long dT;
-
-  if( ! prevbR && bR )
-  {
-    T1 = micros();
-    digitalWrite( ledPin, true );
-    prevbR = true;
-  }
-  if( prevbR && ! bR )
-  {
-    dT = micros() - T1;
-    Serial.print( "\ndT = " );
-    Serial.print( dT );
-    digitalWrite( ledPin, false );
-    prevbR = false;
-  }
+  digitalWrite( ledPin, buttonRead );
 }
