@@ -4,9 +4,8 @@ TEST D’UN BOUTON PIÉZOÉLECTRIQUE À DEUX FILS.
 simple-piezo-switch-002.ino
 
 # DESCRIPTION DU PROGRAMME
-Chaque fois que l’on pèse sur le bouton piézoélectrique,
-la led de l’Arduino change d’état. Un anti-rebond de
-250 ms est intégré au système.
+Chaque fois que l’on pèse sur le bouton piézoélectrique, la led de
+l’Arduino change d’état. Un anti-rebond est intégré au système.
 
 Voir aussi :
 http://ouilogique.com/piezo-switch/
@@ -27,6 +26,7 @@ septembre 2017, ouilogique.com
 
 const int ledPin = LED_BUILTIN;
 const int buttonPin = 9;
+const unsigned long delayBounce = 25; // Nb de millisecondes entre deux pressions pour supprimer les rebonds.
 #define buttonRead ! digitalRead( buttonPin )
 
 void setup()
@@ -39,13 +39,17 @@ void setup()
 
 void loop()
 {
-  static long T1 = millis();
-  static bool ledVal = false;
-  if( buttonRead && (millis()-T1>250) )
+  static unsigned long T1 = 0;
+  static unsigned long dT = 0;
+  dT = millis()-T1;
+  if( buttonRead && (dT > delayBounce) )
   {
-    Serial.println( millis() );
+    T1 = millis();
+    while( buttonRead ){}
+    dT = millis()-T1;
+    static bool ledVal = false;
     ledVal = ! ledVal;
     digitalWrite( ledPin, ledVal );
-    T1 = millis();
+    Serial.println( dT );
   }
 }

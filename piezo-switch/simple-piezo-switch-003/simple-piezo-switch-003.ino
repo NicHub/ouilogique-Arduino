@@ -32,8 +32,11 @@ septembre 2017, ouilogique.com
 const int ledPin = LED_BUILTIN;
 const int buttonPin = 9; // ! Si on change de broche, il faut aussi changer l’initialisation de l’interruption dans le setup et le traitement de l’interruption dans l’ISR !
 const long delayBounce = 25; // Nb de millisecondes entre deux pressions pour supprimer les rebonds.
+const unsigned long delayChoc = 20; // Si l’impulsion est plus courte que delayChoc, on considère que c’est un choc et on ne tient pas compte du signal.
 
 bool buttonPressed = false;
+
+#define buttonRead ! ( PINB & (1<<PINB1) )
 
 void setup()
 {
@@ -56,11 +59,25 @@ void loop()
     static long prevMillis = millis();
     if( millis() - prevMillis > delayBounce )
     {
-      Serial.println( millis() );
-      static bool ledVal = false;
-      ledVal = ! ledVal;
-      digitalWrite( ledPin, ledVal );
-      prevMillis = millis();
+      unsigned long T1 = millis();
+      while( buttonRead ){}
+      unsigned long dT = millis() - T1;
+      if( dT > delayChoc )
+      {
+        static bool ledVal = false;
+        ledVal = ! ledVal;
+        digitalWrite( ledPin, ledVal );
+        prevMillis = millis();
+        Serial.print( "\nledVal = " );
+        Serial.println( ledVal );
+      }
+      else
+      {
+        Serial.println( "Choc détecté" );
+        delay( 500 );
+      }
+      Serial.print( "dT = " );
+      Serial.println( dT );
     }
   }
 }
@@ -69,12 +86,11 @@ void loop()
 // Traitement de l’interruption.
 ISR( PCINT0_vect )
 {
-  static uint8_t portbhistory = 0xFF;     // default is high because the pull-up
-  uint8_t changedbits;
+  static bool prevButtonRead = 1;
+  bool curButtonRead = buttonRead;
 
-  changedbits = PINB ^ portbhistory;
-  portbhistory = PINB;
-
-  if( changedbits & (1<<PINB1) && PINB & (1<<PINB1) )
+  if( curButtonRead == 1 && prevButtonRead == 0 )
     buttonPressed = true;
+
+  prevButtonRead = curButtonRead;
 }
