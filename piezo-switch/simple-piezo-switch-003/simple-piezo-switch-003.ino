@@ -32,9 +32,10 @@ septembre 2017, ouilogique.com
 const int ledPin = LED_BUILTIN;
 const int buttonPin = 9; // ! Si on change de broche, il faut aussi changer l’initialisation de l’interruption dans le setup et le traitement de l’interruption dans l’ISR !
 const long delayBounce = 25; // Nb de millisecondes entre deux pressions pour supprimer les rebonds.
-const unsigned long delayChoc = 20; // Si l’impulsion est plus courte que delayChoc, on considère que c’est un choc et on ne tient pas compte du signal.
+const unsigned long delayBump = 50; // Si l’impulsion est plus courte que delayBump, on considère que c’est un choc et on ne tient pas compte du signal.
 
 bool buttonPressed = false;
+unsigned long prevMillis;
 
 #define buttonRead ! ( PINB & (1<<PINB1) )
 
@@ -49,6 +50,8 @@ void setup()
   PCICR  |= ( 1<<PCIE0 );  // set PCIE0 to enable PCMSK0 scan
   PCMSK0 |= ( 1<<PCINT1 ); // set PCINT0 to trigger an interrupt on state change
   sei();                   // turn on interrupts
+
+  prevMillis = millis();
 }
 
 void loop()
@@ -56,18 +59,16 @@ void loop()
   if( buttonPressed )
   {
     buttonPressed = false;
-    static long prevMillis = millis();
     if( millis() - prevMillis > delayBounce )
     {
       unsigned long T1 = millis();
       while( buttonRead ){}
       unsigned long dT = millis() - T1;
-      if( dT > delayChoc )
+      if( dT > delayBump )
       {
         static bool ledVal = false;
         ledVal = ! ledVal;
         digitalWrite( ledPin, ledVal );
-        prevMillis = millis();
         Serial.print( "\nledVal = " );
         Serial.println( ledVal );
       }
@@ -78,7 +79,10 @@ void loop()
       }
       Serial.print( "dT = " );
       Serial.println( dT );
+      prevMillis = millis();
     }
+    else
+      Serial.println( "Rebond détecté" );
   }
 }
 
@@ -89,6 +93,8 @@ ISR( PCINT0_vect )
   static bool prevButtonRead = 1;
   bool curButtonRead = buttonRead;
 
+  // On ne réagit qu’au flanc descendant (bouton pressé)
+  // et pas au flanc montant (bouton relâché).
   if( curButtonRead == 1 && prevButtonRead == 0 )
     buttonPressed = true;
 
