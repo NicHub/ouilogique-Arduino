@@ -51,7 +51,7 @@ const int speedSetupIncrement = 100;
 const int speedChangeIncrement = 10;
 const int speedChangeWait = 50;
 const int speedMax = 2000;
-const int speedMin = 1000;
+const int speedMin = 1500;
 const int speedIdle = 1500;
 int speed = speedIdle;
 
@@ -123,7 +123,9 @@ void setSpeed()
     Serial.print( "\tSPEED = SPEED MIN" );
   else
   {
-    Serial.print( "\tSPEED = " );
+    Serial.print( "\tSPEED " );
+    Serial.print( prevSpeed );
+    Serial.print( " -> " );
     Serial.print( speed );
     speedChanged = true;
   }
@@ -133,14 +135,14 @@ void setSpeed()
     Serial.print( "\t[ " );
     if( speed > prevSpeed )
     {
-      for( int i=prevSpeed; i<=speed; i+=speedChangeIncrement )
+      for( int i=prevSpeed+speedChangeIncrement; i<=speed; i+=speedChangeIncrement )
       {
         sendSpeed( i );
       }
     }
     else
     {
-      for( int i=prevSpeed; i>=speed; i-=speedChangeIncrement )
+      for( int i=prevSpeed-speedChangeIncrement; i>=speed; i-=speedChangeIncrement )
       {
         sendSpeed( i );
       }
