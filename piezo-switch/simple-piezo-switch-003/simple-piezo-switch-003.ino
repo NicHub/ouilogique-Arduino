@@ -31,7 +31,7 @@ septembre 2017, ouilogique.com
 
 const int ledPin = LED_BUILTIN;
 const int buttonPin = 9; // ! Si on change de broche, il faut aussi changer l’initialisation de l’interruption dans le setup et le traitement de l’interruption dans l’ISR !
-const long delayBounce = 25; // Nb de millisecondes entre deux pressions pour supprimer les rebonds.
+const unsigned long delayBounce = 25; // Nb de millisecondes entre deux pressions pour supprimer les rebonds.
 const unsigned long delayBump = 50; // Si l’impulsion est plus courte que delayBump, on considère que c’est un choc et on ne tient pas compte du signal.
 
 bool buttonPressed = false;
