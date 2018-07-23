@@ -22,6 +22,7 @@
 #define readTXBTN3 ! digitalRead( TXBTN3 )
 #define setLED       digitalWrite( LED_BUILTIN, HIGH )
 #define clearLED     digitalWrite( LED_BUILTIN, LOW )
+#define TXPINpinMode DDRD  |=  ( 1<<7 )
 #define setTXPIN     PORTD |=  ( 1<<7 )
 #define clearTXPIN   PORTD &= ~( 1<<7 )
 #define writeTXPIN( bitvalue ) ( bitvalue ? setTXPIN : clearTXPIN )
@@ -35,6 +36,7 @@ void setup()
   pinMode( TXBTN2, INPUT_PULLUP );
   pinMode( TXBTN3, INPUT_PULLUP );
   pinMode( LED_BUILTIN, OUTPUT );
+  TXPINpinMode;
 
   int rows = sizeof MESSAGES_TO_SEND / sizeof MESSAGES_TO_SEND[0];
   int cols = sizeof MESSAGES_TO_SEND[0] / sizeof(char);
@@ -56,8 +58,10 @@ void sendMessage( uint8_t MESSAGE_ID )
     writeTXPIN( bitValue );
     delayMicroseconds( BIT_DURATION );
   }
+  clearTXPIN;
   Serial.print( "\n" );
   clearLED;
+  delay( WAIT_AFTER_SEND );
 }
 
 void loop()
