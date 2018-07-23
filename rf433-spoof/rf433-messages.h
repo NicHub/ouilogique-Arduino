@@ -6,6 +6,7 @@ rtl_433 donne la valeur suivante pour la télécommande de la lumière :
 
 static const uint8_t MESSAGE_NB_BITS = 128; // Nombre de bits du message
 static const uint16_t BIT_DURATION = 280; // En microsecondes
+static const uint8_t WAIT_AFTER_SEND = 0; // Attente en millisecondes après l’envoi d’un message.
 static const char MESSAGES_TO_SEND[][ MESSAGE_NB_BITS ] PROGMEM  =
 {
   { "11111111111111111111111100000000000000000000000011111111111111111111111100000000000000000000000011111111111111111111111100000000" },
