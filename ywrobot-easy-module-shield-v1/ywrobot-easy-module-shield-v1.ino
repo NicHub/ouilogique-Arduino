@@ -9,13 +9,12 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
-
 #include "aTunes.h"
 
 
 #define carillonPin 5
-#define DHTPIN  4
-#define DHTTYPE        DHT11
+#define DHTPIN      4
+#define DHTTYPE     DHT11
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
 uint32_t delayMS;
@@ -37,37 +36,40 @@ uint32_t delayMS;
 void initDHT()
 {
   dht.begin();
-
   sensor_t sensor;
 
-  Serial.println( "DHTxx Unified Sensor Example" );
-  // Print temperature sensor details.
-  dht.temperature().getSensor( &sensor );
-  Serial.println( F( "------------------------------------" ) );
-  Serial.println( F( "Temperature" ) );
-  Serial.print  ( F( "Sensor:       " ) ); Serial.println( sensor.name );
-  Serial.print  ( F( "Driver Ver:   " ) ); Serial.println( sensor.version );
-  Serial.print  ( F( "Unique ID:    " ) ); Serial.println( sensor.sensor_id );
-  Serial.print  ( F( "Max Value:    " ) ); Serial.print  ( sensor.max_value);  Serial.println( F( " *C" ) );
-  Serial.print  ( F( "Min Value:    " ) ); Serial.print  ( sensor.min_value);  Serial.println( F( " *C" ) );
-  Serial.print  ( F( "Resolution:   " ) ); Serial.print  ( sensor.resolution); Serial.println( F( " *C" ) );
-  Serial.println( "------------------------------------" );
-  // Print humidity sensor details.
-  dht.humidity().getSensor( &sensor );
-  Serial.println( F( "------------------------------------" ) );
-  Serial.println( F( "Humidity" ) );
-  Serial.print  ( F( "Sensor:       " ) ); Serial.println( sensor.name );
-  Serial.print  ( F( "Driver Ver:   " ) ); Serial.println( sensor.version );
-  Serial.print  ( F( "Unique ID:    " ) ); Serial.println( sensor.sensor_id );
-  Serial.print  ( F( "Max Value:    " ) ); Serial.print  ( sensor.max_value );  Serial.println( F( "\x25" ) ); // \x25 = signe %
-  Serial.print  ( F( "Min Value:    " ) ); Serial.print  ( sensor.min_value );  Serial.println( F( "\x25" ) ); // \x25 = signe %
-  Serial.print  ( F( "Resolution:   " ) ); Serial.print  ( sensor.resolution ); Serial.println( F( "\x25" ) ); // \x25 = signe %
-  Serial.println( "------------------------------------" );
-
+  bool printDHTInfo = false;
+  if( printDHTInfo )
+  {
+    Serial.println( "DHTxx Unified Sensor Example" );
+    // Print temperature sensor details.
+    dht.temperature().getSensor( &sensor );
+    Serial.println( F( "------------------------------------" ) );
+    Serial.println( F( "Temperature" ) );
+    Serial.print  ( F( "Sensor:       " ) ); Serial.println( sensor.name );
+    Serial.print  ( F( "Driver Ver:   " ) ); Serial.println( sensor.version );
+    Serial.print  ( F( "Unique ID:    " ) ); Serial.println( sensor.sensor_id );
+    Serial.print  ( F( "Max Value:    " ) ); Serial.print  ( sensor.max_value);  Serial.println( F( " *C" ) );
+    Serial.print  ( F( "Min Value:    " ) ); Serial.print  ( sensor.min_value);  Serial.println( F( " *C" ) );
+    Serial.print  ( F( "Resolution:   " ) ); Serial.print  ( sensor.resolution); Serial.println( F( " *C" ) );
+    Serial.println( "------------------------------------" );
+    // Print humidity sensor details.
+    dht.humidity().getSensor( &sensor );
+    Serial.println( F( "------------------------------------" ) );
+    Serial.println( F( "Humidity" ) );
+    Serial.print  ( F( "Sensor:       " ) ); Serial.println( sensor.name );
+    Serial.print  ( F( "Driver Ver:   " ) ); Serial.println( sensor.version );
+    Serial.print  ( F( "Unique ID:    " ) ); Serial.println( sensor.sensor_id );
+    Serial.print  ( F( "Max Value:    " ) ); Serial.print  ( sensor.max_value );  Serial.println( F( "\x25" ) ); // \x25 = signe %
+    Serial.print  ( F( "Min Value:    " ) ); Serial.print  ( sensor.min_value );  Serial.println( F( "\x25" ) ); // \x25 = signe %
+    Serial.print  ( F( "Resolution:   " ) ); Serial.print  ( sensor.resolution ); Serial.println( F( "\x25" ) ); // \x25 = signe %
+    Serial.println( "------------------------------------" );
+  }
 
   // Set delay between sensor readings based on sensor details.
   delayMS = sensor.min_delay / 1000;
 }
+
 
 void carillon()
 {
@@ -76,10 +78,74 @@ void carillon()
   pinMode( carillonPin, INPUT_PULLUP );
 }
 
+
+void getTempAndHum()
+{
+  // Get temperature event and print its value.
+  sensors_event_t event;
+  dht.temperature().getEvent( &event );
+  if( isnan( event.temperature ) )
+  {
+    Serial.print( F( "TEMPERATURE_C: NaN\n" ) );
+  }
+  else
+  {
+    Serial.print( F( "TEMPERATURE_C: " ) );
+    Serial.print( event.temperature, 1 );
+    Serial.print( F( "\n" ) );
+  }
+
+  // Get humidity event and print its value.
+  // !! Si on demande la température (event.temperature) alors qu’on a
+  // utilisé dht.humidity().getEvent( &event );, c’est la valeur de
+  // l’humidité que l’on obtient...
+  dht.humidity().getEvent( &event );
+  if( isnan( event.relative_humidity ) )
+  {
+    Serial.print( F( "HUMIDITY: NaN\n" ) );
+  }
+  else
+  {
+    Serial.print( F( "HUMIDITY: " ) );
+    Serial.print( event.relative_humidity, 1 );
+    Serial.print( F( "\n" ) );
+  }
+}
+
+
+void serialEvent()
+{
+  static String serverCommand = "";
+  while( Serial.available() )
+  {
+    char serverChar = ( char )Serial.read();
+    if( serverChar == '\n' )
+    {
+      doSerialAction( serverCommand.toInt() );
+      serverCommand = "";
+      break;
+    }
+    else
+      serverCommand += serverChar;
+  }
+}
+
+
+void doSerialAction(int serialAction)
+{
+  Serial.print( F("SERIAL_ACTION: " ) );
+  Serial.println( serialAction );
+       if( serialAction == 1 ) digitalWrite( LED2, HIGH );
+  else if( serialAction == 2 ) digitalWrite( LED2, LOW );
+  else if( serialAction == 3 ) digitalWrite( LED3, HIGH );
+  else if( serialAction == 4 ) digitalWrite( LED3, LOW );
+}
+
+
 void setup()
 {
   Serial.begin( 115200 );
-  Serial.print( "\n\nYWRobot - Easy Module Shield v1\n===============================" );
+  Serial.print( F( "\n\n# YWRobot - Easy Module Shield v1\n\n" ) );
 
   pinMode( LED2,   OUTPUT );
   pinMode( LED3,   OUTPUT );
@@ -92,11 +158,11 @@ void setup()
   digitalWrite( LED2,   HIGH );
   digitalWrite( LED3,   HIGH );
   digitalWrite( LED5_B, HIGH );
-  delay( 500 );
+  _delay_ms( 500 );
   digitalWrite( LED2,   LOW );
   digitalWrite( LED3,   LOW );
   digitalWrite( LED5_B, LOW );
-  delay( 500 );
+  _delay_ms( 500 );
 
   carillon();
 
@@ -106,89 +172,56 @@ void setup()
 
 void loop()
 {
-  while( READ_S2 )
+
+  // Bouton 2
+  if( READ_S2 )
   {
-    Serial.print( "." );
-    delay( 10 );
-    if( ! READ_S2 )
-      Serial.print( "\n" );
+    Serial.print( F( "BUTTON_2: \"ON\"\n" ) );
+    while( READ_S2 )
+      _delay_ms( 1 );
   }
-  while( READ_S3 )
+  else
   {
-    Serial.print( "*" );
-    delay( 10 );
-    if( ! READ_S3 )
-      Serial.print( "\n" );
+    Serial.print( F( "BUTTON_2: \"OFF\"\n" ) );
   }
 
+  // Bouton 3
+  if( READ_S3 )
+  {
+    Serial.print( F( "BUTTON_3: \"ON\"\n" ) );
+    while( READ_S3 )
+      _delay_ms( 1 );
+  }
+  else
+  {
+    Serial.print( F( "BUTTON_3: \"OFF\"\n" ) );
+  }
+
+  // Température et humidité
   getTempAndHum();
-  delay( 100 );
-
+  _delay_ms( 1 );
 
   // Potentiomètre
   int A0val = analogRead( A0 );
+  Serial.print( F( "POTENTIOMETER: " ) );
   Serial.println( A0val );
 
   // luxmètre
   int A1val = analogRead( A1 );
+  Serial.print( F( "LIGHT_METER: " ) );
   Serial.println( A1val );
 
-  //
+  // Entrée analogique 2
   int A2val = analogRead( A2 );
+  Serial.print( F( "ANALOG_INPUT_2: " ) );
   Serial.println( A2val );
 
-  //
+  // Entrée analogique 3
   int A3val = analogRead( A3 );
+  Serial.print( F( "ANALOG_INPUT_3: " ) );
   Serial.println( A3val );
 
-
-  pinMode( carillonPin, OUTPUT );
-  for (int i = 0; i < 10; ++i)
-  {
-    digitalWrite( carillonPin, HIGH );
-    delay( 100 );
-    digitalWrite( carillonPin, LOW );
-    delay( 100 );
-  }
-}
-
-
-
-
-
-
-
-
-void getTempAndHum()
-{
-  // Get temperature event and print its value.
-  sensors_event_t event;
-  dht.temperature().getEvent( &event );
-  if( isnan( event.temperature ) )
-  {
-    Serial.print( F( "NaN *C     " ) );
-  }
-  else
-  {
-    Serial.print( event.temperature, 1 );
-    Serial.print( F( "*C     " ) );
-  }
-
-  // Get humidity event and print its value.
-  // !! Si on demande la température (event.temperature) alors qu’on a
-  // utilisé dht.humidity().getEvent( &event );, c’est la valeur de
-  // l’humidité que l’on obtient...
-  dht.humidity().getEvent( &event );
-  if( isnan( event.relative_humidity ) )
-  {
-    Serial.print( F( "NaN \x25" ) );
-  }
-  else
-  {
-    Serial.print( event.relative_humidity, 1 );
-    Serial.print( F( " \x25" ) ); // signe %
-  }
-
-  // Ajout séparateur de mesures Serial
-  Serial.print( "\n" );
+  // Fin de la boucle
+  Serial.print( F( "\n" ) );
+  _delay_ms( 1000 );
 }
